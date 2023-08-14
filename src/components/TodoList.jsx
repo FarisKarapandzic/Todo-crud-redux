@@ -1,42 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTodo, toggleComplete, updateTodo } from "./TodoSlice";
-import { useState } from "react";
+import { addTodo, deleteTodo, toggleComplete, updateTodo } from "./TodoSlice";
+
 function TodoList() {
   const todos = useSelector((state) => state.todos);
   const dispatch = useDispatch();
-  const [editId, setEditId] = useState(null);
+
+  const [editStates, setEditStates] = useState({});
   const [editedText, setEditedText] = useState("");
 
-  const handleDeleteTodo = (index) => {
-    dispatch(deleteTodo(index));
+  const handleDeleteTodo = (id) => {
+    dispatch(deleteTodo(id));
   };
 
-  const handleToggleComplete = (index) => {
-    dispatch(toggleComplete(index));
+  const handleToggleComplete = (id) => {
+    if (!editStates[id]?.isEditing) {
+      dispatch(toggleComplete(id));
+    }
   };
 
-  const handleEditTodo = (index, text) => {
-    setEditId(index);
+  const handleEditTodo = (id, text) => {
+    setEditStates((prevEditStates) => ({
+      ...prevEditStates,
+      [id]: { isEditing: true },
+    }));
     setEditedText(text);
   };
 
-  const handleUpdateTodo = (index) => {
+  const handleUpdateTodo = (id) => {
     if (editedText.trim() !== "") {
-      dispatch(updateTodo({ index, newText: editedText }));
-      setEditId(null);
+      dispatch(updateTodo({ id, newText: editedText }));
+      setEditStates((prevEditStates) => ({
+        ...prevEditStates,
+        [id]: { isEditing: false },
+      }));
       setEditedText("");
     }
+  };
+
+  const handleEditInputChange = (event) => {
+    setEditedText(event.target.value);
   };
 
   return (
     <div className="">
       <ul>
-        <div className="px-4 py-2  w-[405px] bg-transparent text-white flex-grow whitespace-normal">
-          {todos.map((todo, index) => (
+        <div className="px-4 py-2 w-[405px] bg-transparent text-white flex-grow whitespace-normal">
+          {todos.map((todo) => (
             <li
               className="flex justify-between items-center mx-auto my-4 text-white bg-gradient-to-r from-blue-500 to-purple-700 p-4 rounded-md w-11/12"
-              key={index}
+              key={todo.id}
               style={{ cursor: "pointer" }}
             >
               <div
@@ -44,17 +57,17 @@ function TodoList() {
                   todo.completed ? "line-through opacity-40" : ""
                 }`}
                 onClick={() => {
-                  if (editId === null) {
-                    handleToggleComplete(index);
+                  if (!editStates[todo.id]?.isEditing) {
+                    handleToggleComplete(todo.id);
                   }
                 }}
               >
-                {editId === index ? (
+                {editStates[todo.id]?.isEditing ? (
                   <input
                     type="text"
                     value={editedText}
-                    onChange={(e) => setEditedText(e.target.value)}
-                    className="px-4 py-2 rounded-l-md  outline-none w-full bg-transparent text-white"
+                    onChange={handleEditInputChange}
+                    className="px-4 py-2 rounded-l-md outline-none w-full bg-transparent text-white"
                   />
                 ) : (
                   todo.text
@@ -63,23 +76,23 @@ function TodoList() {
               <div className="flex flex-row space-x-2">
                 <button
                   className="px-3 py-1 bg-red-500 rounded-md text-white"
-                  onClick={() => handleDeleteTodo(index)}
+                  onClick={() => handleDeleteTodo(todo.id)}
                 >
                   Delete
                 </button>
                 <button
                   className={`px-3 py-1 bg-blue-500 rounded-md text-white ${
-                    editId === index ? "bg-green-500" : ""
+                    editStates[todo.id]?.isEditing ? "bg-green-500" : ""
                   }`}
                   onClick={() => {
-                    if (editId === index) {
-                      handleUpdateTodo(index);
+                    if (editStates[todo.id]?.isEditing) {
+                      handleUpdateTodo(todo.id);
                     } else {
-                      handleEditTodo(index, todo.text);
+                      handleEditTodo(todo.id, todo.text);
                     }
                   }}
                 >
-                  {editId === index ? "Save" : "Edit"}
+                  {editStates[todo.id]?.isEditing ? "Save" : "Edit"}
                 </button>
               </div>
             </li>

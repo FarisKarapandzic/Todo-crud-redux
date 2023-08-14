@@ -1,18 +1,25 @@
-import React from "react";
 import { createSlice } from "@reduxjs/toolkit";
+
+let nextTodoId = 1;
+
 const todoSlice = createSlice({
   name: "todos",
   initialState: [],
   reducers: {
     addTodo: (state, action) => {
-      state.push({ text: action.payload, completed: false }); // dodaje array 
+      state.push({ id: nextTodoId++, text: action.payload, completed: false });
     },
     deleteTodo: (state, action) => {
-      state.splice(action.payload,1); // brise array 
+      const index = state.findIndex((todo) => todo.id === action.payload);
+      if (index !== -1) {
+        state.splice(index, 1);
+      }
     },
     toggleComplete: (state, action) => {
-      const index = action.payload;
-      state[index].completed = !state[index].completed; // mjenja vrijednost da li je completed ili ne
+      const todo = state.find((todo) => todo.id === action.payload);
+      if (todo) {
+        todo.completed = !todo.completed;
+      }
     },
     updateTodo: (state, action) => {
       const { id, newText } = action.payload;
