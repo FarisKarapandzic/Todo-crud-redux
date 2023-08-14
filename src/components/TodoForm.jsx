@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 function TodoForm() {
   const [text, setText] = useState("");
-  const dispatch = useDispatch("");
+  const dispatch = useDispatch();
 
   const handleInputChange = (event) => {
     setText(event.target.value);
