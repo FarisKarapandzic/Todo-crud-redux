@@ -14,12 +14,15 @@ const todoSlice = createSlice({
       const index = action.payload;
       state[index].completed = !state[index].completed; // mjenja vrijednost da li je completed ili ne
     },
-    editTodo: (state, action) => {
-      const { index, newText } = action.payload;
-      state[index].text = newText;
+    updateTodo: (state, action) => {
+      const { id, newText } = action.payload;
+      const todo = state.find((todo) => todo.id === id);
+      if (todo) {
+        todo.text = newText;
+      }
     },
   },
 });
 
-export const { addTodo, deleteTodo, toggleComplete, editTodo } = todoSlice.actions;
+export const { addTodo, deleteTodo, toggleComplete, updateTodo } = todoSlice.actions;
 export default todoSlice.reducer;
