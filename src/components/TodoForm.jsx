@@ -14,6 +14,9 @@ function TodoForm() {
     dispatch(addTodo(text));
     setText("");
   };
+
+
+  console.log("faris")
   return (
     <div>
       <form className="mb-8">
