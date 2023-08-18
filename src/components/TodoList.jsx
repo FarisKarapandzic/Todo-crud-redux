@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addTodo, deleteTodo, toggleComplete, updateTodo } from "./TodoSlice";
+import {AiOutlineRight} from 'react-icons/ai';
+import { Link } from "react-router-dom";
 
 function TodoList() {
   const todos = useSelector((state) => state.todos);
@@ -94,6 +96,11 @@ function TodoList() {
                 >
                   {editStates[todo.id]?.isEditing ? "Save" : "Edit"}
                 </button>
+                <button>
+                  <Link to={`/details/${todo.id}`}>
+                  <AiOutlineRight/>
+                  </Link>
+                  </button>
               </div>
             </li>
           ))}
