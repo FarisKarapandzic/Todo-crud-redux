@@ -15,7 +15,7 @@ function TodoDetails() {
   return (
     <div className="px-4 py-8 flex justify-center items-center h-screen">
       <div className="bg-white rounded-lg p-6 shadow-md w-1/2">
-        <h2 className="text-2xl font-semibold mb-4">{todo.title}</h2>
+        <h2 className="text-2xl font-semibold mb-4">{todo.text}</h2>
         <p className={`mb-2 ${todo.completed ? "line-through" : ""}`}>
           Completion Status: {todo.completed ? "Completed" : "Not Completed"}
         </p>
